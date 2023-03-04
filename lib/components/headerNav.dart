@@ -4,7 +4,7 @@ List<Map<String, String>> list = [
   {'icon': 'images/type_index.png', 'name': '首页'},
   {'icon': 'images/type_search.png', 'name': '分类搜索'},
   {'icon': 'images/type_shopcart.png', 'name': '购物车'},
-  {'icon': 'images/type_my.png', 'name': '我的京东'},
+  {'icon': 'images/type_my.png', 'name': '我的'},
   {'icon': 'images/type_recently.png', 'name': '浏览记录'}
 ];
 

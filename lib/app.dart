@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jd_demo_202302/cart.dart';
 import 'package:jd_demo_202302/cateGoryPage.dart';
+import 'package:jd_demo_202302/me.dart';
+import 'package:jd_demo_202302/model/bottomBarListModel.dart';
+import 'package:provider/provider.dart';
 import 'home.dart';
 
 class App extends StatefulWidget {
@@ -12,30 +15,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late PageController pageController;
-  late int bottomBarId = 2;
-  final List<Map<String, dynamic>> bottomBarList = [
-    {
-      'id': 0,
-      'selected': 'images/app/home_selected.png',
-      'noSelected': 'images/app/home_no_selected.png'
-    },
-    {
-      'id': 1,
-      'selected': 'images/app/classification_selected.png',
-      'noSelected': 'images/app/classification_no_selected.png'
-    },
-    {
-      'id': 2,
-      'selected': 'images/app/buy_selected.png',
-      'noSelected': 'images/app/buy_no_selected.png'
-    },
-    {
-      'id': 3,
-      'selected': 'images/app/login.png',
-      'noSelected': 'images/app/login_no_selected.png'
-    },
-  ];
-
+  late int bottomBarId = 0;
   @override
   void initState() {
     super.initState();
@@ -50,28 +30,29 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    var bottomBarList = context.watch<BottomBarList>().list;
+    // print('+++++++++$bottomBarList');
     final List<Widget> listBottomApp = List.generate(
         4,
-            (i) =>
-            Expanded(
+        (i) => Expanded(
                 child: GestureDetector(
-                  onTap: () {
-                    clickBottom(i);
-                  },
-                  child: Image.asset(
-                    (i == bottomBarId)
-                        ? bottomBarList[i]['selected']
-                        : bottomBarList[i]['noSelected'],
-                    width: 60,
-                    height: 46,
-                  ),
-                )));
+              onTap: () {
+                clickBottom(i);
+              },
+              child: Image.asset(
+                (i == bottomBarId)
+                    ? bottomBarList[i]['selected']
+                    : bottomBarList[i]['noSelected'],
+                width: 60,
+                height: 46,
+              ),
+            )));
 
     return Scaffold(
       body: PageView(
         controller: pageController,
         onPageChanged: onPageChanged,
-        children: const [Home(), CateGoryPage(),Cart()],
+        children: const [Home(), CateGoryPage(), Cart(), Me()],
       ),
       bottomNavigationBar: Container(
         height: 50,
@@ -90,12 +71,11 @@ class _AppState extends State<App> {
   }
 
   void clickBottom(int i) {
-    setState(() {
-      bottomBarId = i;
-      pageController.animateToPage(
-          i, duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut);
-    });
+    // animateToPage 切换页面时图标会有跳闪
+    // pageController.animateToPage(
+    //     i, duration: const Duration(milliseconds: 300),
+    //     curve: Curves.easeInOut);
+    pageController.jumpToPage(i);
   }
 
   void onPageChanged(int value) {

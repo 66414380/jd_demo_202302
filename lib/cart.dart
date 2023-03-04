@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/components/cartItem.dart';
 import 'package:jd_demo_202302/components/customAppBar.dart';
+import 'package:jd_demo_202302/components/customDivide.dart';
 import 'package:jd_demo_202302/components/goodsItem.dart';
 import 'package:jd_demo_202302/components/headerNav.dart';
 import 'package:jd_demo_202302/model/cartModel.dart';
@@ -43,6 +44,7 @@ class _CartState extends State<Cart> {
       }
     }
     return Scaffold(
+      backgroundColor: const Color(0xfff5f5f5),
       body: CustomScrollView(
         slivers: [
           SliverList(
@@ -50,19 +52,20 @@ class _CartState extends State<Cart> {
             CustomAppBar(
               height: 44,
               child: Row(
-                children: [
+                children: const [
                   SizedBox(
                       width: 44,
-                      child: GestureDetector(
-                        onTap: () {
-                          context.pop();
-                        },
-                        child: const Icon(
-                          Icons.arrow_back_ios,
-                          size: 18,
-                        ),
-                      )),
-                  const Expanded(
+                      // child: GestureDetector(
+                      //   onTap: () {
+                      //     context.pop();
+                      //   },
+                      //   child: const Icon(
+                      //     Icons.arrow_back_ios,
+                      //     size: 18,
+                      //   ),
+                      // )
+                  ),
+                  Expanded(
                     child: Center(
                       child: Text(
                         '购物车',
@@ -71,7 +74,7 @@ class _CartState extends State<Cart> {
                       ),
                     ),
                   ),
-                  const RightHeader()
+                  RightHeader()
                 ],
               ),
             ),
@@ -82,63 +85,7 @@ class _CartState extends State<Cart> {
                 });
               },
             ),
-            Container(
-              height: 30,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.centerRight,
-                    children: [
-                      Container(
-                        height: 1,
-                        color: const Color(0xffcccccc),
-                      ),
-                      Positioned(
-                          right: -2,
-                          child: Transform.rotate(
-                              angle: pi / 4,
-                              child: Container(
-                                width: 4,
-                                height: 4,
-                                color: const Color(0xffcccccc),
-                              )))
-                    ],
-                  )),
-                  Expanded(
-                      child: Container(
-                    height: 30,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      '可能你还想要',
-                      style: TextStyle(fontSize: 12, color: Color(0xff999999)),
-                    ),
-                  )),
-                  Expanded(
-                      child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.centerLeft,
-                    children: [
-                      Container(
-                        height: 1,
-                        color: const Color(0xffcccccc),
-                      ),
-                      Positioned(
-                          left: -2,
-                          child: Transform.rotate(
-                              angle: pi / 4,
-                              child: Container(
-                                width: 4,
-                                height: 4,
-                                color: const Color(0xffcccccc),
-                              )))
-                    ],
-                  )),
-                ],
-              ),
-            ),
+                const CustomDivide(name: '可能你还想要',),
             // 列表
             Container(
                 padding: const EdgeInsets.all(5),

@@ -133,4 +133,25 @@ class ConfirmDialog {
   static void close() {
     overlayEntry?.remove();
   }
+
+  static void showLoading(BuildContext context) {
+    overlayEntry = OverlayEntry(builder: (context) {
+      return Stack(children: [
+        Positioned.fill(
+          child: Container(
+            color: Colors.transparent,
+          ),
+        ),
+        const Center(
+            child: SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(
+                  color: Colors.amber,
+                  valueColor: AlwaysStoppedAnimation(Colors.red),
+                )))
+      ]);
+    });
+    Overlay.of(context).insert(overlayEntry!);
+  }
 }

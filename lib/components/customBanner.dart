@@ -40,6 +40,12 @@ class CustomBannerState extends State<CustomBanner> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -109,11 +115,14 @@ class CustomBannerState extends State<CustomBanner> {
   initTimer() {
     timer ??= Timer.periodic(const Duration(seconds: 3), (t) {
       curIndex++;
-      pageController.animateToPage(
-        curIndex,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.linear,
-      );
+      // 加上判断 否则切换页面时会报 '_positions.isNotEmpty': ScrollController not attached to any scroll views.
+      if(pageController.hasClients) {
+        pageController.animateToPage(
+          curIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
+        );
+      }
     });
   }
 

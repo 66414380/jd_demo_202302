@@ -15,25 +15,26 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late EasyRefreshController easyRefreshController;
+  late PageController pageController;
   final List<List<Map<String, dynamic>>> cateList = [
     [
-      {'name': '京东超市', 'img': 'images/banner2/img1.png'},
+      {'name': '超市', 'img': 'images/banner2/img1.png'},
       {'name': '数码电器', 'img': 'images/banner2/img2.png'},
-      {'name': '京东新百货', 'img': 'images/banner2/img3.png'},
-      {'name': '京东生鲜', 'img': 'images/banner2/img4.png'},
-      {'name': '京东到家', 'img': 'images/banner2/img5.png'},
+      {'name': '新百货', 'img': 'images/banner2/img3.png'},
+      {'name': '生鲜', 'img': 'images/banner2/img4.png'},
+      {'name': '到家', 'img': 'images/banner2/img5.png'},
       {'name': '充值缴费', 'img': 'images/banner2/img6.png'},
       {'name': '附近好店', 'img': 'images/banner2/img7.png'},
       {'name': '领券', 'img': 'images/banner2/img8.png'},
       {'name': 'PLUS会员', 'img': 'images/banner2/img9.png'},
-      {'name': '京东国际', 'img': 'images/banner2/img10.png'},
+      {'name': '国际', 'img': 'images/banner2/img10.png'},
     ],
     [
-      {'name': '京东拍卖', 'img': 'images/banner2/img11.png'},
+      {'name': '拍卖', 'img': 'images/banner2/img11.png'},
       {'name': '玩3C', 'img': 'images/banner2/img12.png'},
       {'name': '沃尔玛', 'img': 'images/banner2/img13.png'},
       {'name': '美妆馆', 'img': 'images/banner2/img14.png'},
-      {'name': '京东旅行', 'img': 'images/banner2/img15.png'},
+      {'name': '旅行', 'img': 'images/banner2/img15.png'},
       {'name': '拍拍二手', 'img': 'images/banner2/img16.png'},
       {'name': '全部', 'img': 'images/banner2/img17.png'}
     ]
@@ -68,11 +69,13 @@ class _HomeState extends State<Home> {
       controlFinishRefresh: true,
       controlFinishLoad: true,
     );
+    pageController = PageController();
   }
 
   @override
   void dispose() {
     easyRefreshController.dispose();
+    pageController.dispose();
     super.dispose();
   }
 
@@ -201,6 +204,7 @@ class _HomeState extends State<Home> {
                       width: double.infinity,
                       constraints: const BoxConstraints(maxHeight: 162),
                       child: PageView(
+                        controller: pageController,
                         onPageChanged: (int i) {
                           setState(() {
                             cateId = i;
@@ -245,7 +249,7 @@ class _HomeState extends State<Home> {
                                 margin:
                                     const EdgeInsets.only(left: 10, right: 5),
                                 child: const Text(
-                                  '京东秒杀',
+                                  '秒杀',
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: Color.fromRGBO(51, 51, 51, 1)),

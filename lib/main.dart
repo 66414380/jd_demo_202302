@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/cart.dart';
+import 'package:jd_demo_202302/login.dart';
+import 'package:jd_demo_202302/me.dart';
+import 'package:jd_demo_202302/model/bottomBarListModel.dart';
 import 'package:jd_demo_202302/model/cartModel.dart';
 import 'package:provider/provider.dart';
 import 'cateGoryPage.dart';
@@ -12,11 +15,44 @@ GoRouter router() {
     routes: [
       GoRoute(path: '/', builder: (context, state) => const App(), routes: [
         GoRoute(
+          name: 'cateGoryPage',
           path: 'cateGoryPage',
           builder: (context, state) => const CateGoryPage(),
         ),
-        GoRoute(path: 'cart', builder: (context, state) => const Cart())
+        GoRoute(
+            name: 'cart',
+            path: 'cart',
+            builder: (context, state) => const Cart()),
+        GoRoute(name: 'me', path: 'me', builder: (context, state) => const Me())
       ]),
+
+      GoRoute(
+          name: 'login',
+          path: '/login',
+          // builder: (context, state) => const Login(),
+          pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const Login(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) => Stack(
+                  children: <Widget>[
+                    SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.0, 0.0),
+                        end: const Offset(-0.1, 0.0),
+                      ).animate(animation),
+                      child: const Me(),
+                    ),
+                    SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    )
+                  ],
+                ),
+              )),
 
       // GoRoute(
       //   path: '/catalog',
@@ -45,7 +81,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<CartModel>(
-              create: (BuildContext context) => CartModel())
+              create: (BuildContext context) => CartModel()),
+          ChangeNotifierProvider<BottomBarList>(
+              create: (BuildContext context) => BottomBarList()),
         ],
         child: MaterialApp.router(
           title: 'Jd Demo',
