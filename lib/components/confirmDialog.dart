@@ -1,131 +1,174 @@
 import 'package:flutter/material.dart';
 
+class AnimatedConfirmDialog extends StatefulWidget {
+  const AnimatedConfirmDialog({Key? key, this.id}) : super(key: key);
+  final String? id;
+  @override
+  State<AnimatedConfirmDialog> createState() => _AnimatedConfirmDialogState();
+}
+
+class _AnimatedConfirmDialogState extends State<AnimatedConfirmDialog> {
+  late double opacity = 0.0;
+  final int time = 200;
+
+  @override
+  void initState() {
+    super.initState();
+    // 需要排除等OverlayEntry渲染
+    Future.delayed(const Duration(microseconds: 0)).then((value) {
+      setState(() {
+        opacity = opacity == 1.0 ? 0.0 : 1.0;
+      });
+    });
+  }
+
+  void close() {
+    setState(() {
+      opacity = opacity == 1.0 ? 0.0 : 1.0;
+    });
+    Future.delayed(Duration(milliseconds: time)).then((value) {
+      setState(() {
+        ConfirmDialog.close();
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+        opacity: opacity,
+        duration: Duration(milliseconds: time),
+        child: Stack(
+          children: [
+            Positioned.fill(
+                child: GestureDetector(
+                    onTap: () {
+                      // close();
+                    },
+                    child: Container(
+                      color: Colors.black54,
+                    ))),
+            Positioned(
+                left: (MediaQuery.of(context).size.width - 270) / 2,
+                top: MediaQuery.of(context).size.height * 30 / 100,
+                child: Container(
+                    width: 270,
+                    height: 174,
+                    padding:
+                        const EdgeInsets.only(top: 20, left: 15, right: 15),
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, .3),
+                              offset: Offset(0, 1),
+                              blurRadius: 10)
+                        ]),
+                    child: Material(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(top: 5, bottom: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(50)),
+                                border: Border.all(
+                                    width: 2, color: const Color(0xffE93B3D))),
+                            child: const Text(
+                              '!',
+                              style: TextStyle(
+                                  fontSize: 30, color: Color(0xffE93B3D)),
+                            ),
+                          ),
+                          const Text(
+                            '确认要删除此商品？',
+                            style: TextStyle(
+                                fontSize: 16, color: Color(0xff333333)),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      close();
+                                    },
+                                    child: Container(
+                                      width: 115,
+                                      height: 30,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                              width: 1,
+                                              color: const Color(0xffcccccc)),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                                color: Color.fromRGBO(
+                                                    0, 0, 0, .05),
+                                                offset: Offset(0, 3),
+                                                blurRadius: 6)
+                                          ]),
+                                      child: const Text(
+                                        '取消',
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xff333333)),
+                                      ),
+                                    )),
+                                GestureDetector(
+                                    onTap: () {
+                                      print(widget.id);
+                                      close();
+                                    },
+                                    child: Container(
+                                      width: 115,
+                                      height: 30,
+                                      alignment: Alignment.center,
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xfff2270c),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Color.fromRGBO(
+                                                    0, 0, 0, .05),
+                                                offset: Offset(0, 3),
+                                                blurRadius: 10,
+                                                spreadRadius: 11)
+                                          ]),
+                                      child: const Text(
+                                        '删除',
+                                        style: TextStyle(
+                                            fontSize: 14, color: Colors.white),
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    )))
+          ],
+        ));
+  }
+}
+
 class ConfirmDialog {
   static OverlayEntry? overlayEntry;
 
-  static void show(BuildContext context, item) {
+  static void show(BuildContext context, String item) {
     overlayEntry = OverlayEntry(builder: (context) {
-      return Stack(
-        children: [
-          Positioned.fill(
-              child: GestureDetector(
-                  onTap: () {
-                    // close();
-                  },
-                  child: Container(
-                    color: Colors.black54,
-                  ))),
-          Positioned(
-              left: (MediaQuery.of(context).size.width - 270) / 2,
-              top: MediaQuery.of(context).size.height * 30 / 100,
-              child: Container(
-                  width: 270,
-                  height: 174,
-                  padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color.fromRGBO(0, 0, 0, .3),
-                            offset: Offset(0, 1),
-                            blurRadius: 10)
-                      ]),
-                  child: Material(
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.only(top: 5, bottom: 10),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(50)),
-                              border: Border.all(
-                                  width: 2, color: const Color(0xffE93B3D))),
-                          child: const Text(
-                            '!',
-                            style: TextStyle(
-                                fontSize: 30, color: Color(0xffE93B3D)),
-                          ),
-                        ),
-                        const Text(
-                          '确认要删除此商品？',
-                          style:
-                              TextStyle(fontSize: 16, color: Color(0xff333333)),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                  onTap: () {
-                                    close();
-                                  },
-                                  child: Container(
-                                    width: 115,
-                                    height: 30,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            width: 1,
-                                            color: const Color(0xffcccccc)),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                        boxShadow: const [
-                                          BoxShadow(
-                                              color:
-                                                  Color.fromRGBO(0, 0, 0, .05),
-                                              offset: Offset(0, 3),
-                                              blurRadius: 6)
-                                        ]),
-                                    child: const Text(
-                                      '取消',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(0xff333333)),
-                                    ),
-                                  )),
-                              GestureDetector(
-                                  onTap: () {
-                                    print(item);
-                                    close();
-                                  },
-                                  child: Container(
-                                    width: 115,
-                                    height: 30,
-                                    alignment: Alignment.center,
-                                    decoration: const BoxDecoration(
-                                        color: Color(0xfff2270c),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color:
-                                                  Color.fromRGBO(0, 0, 0, .05),
-                                              offset: Offset(0, 3),
-                                              blurRadius: 10,
-                                              spreadRadius: 11)
-                                        ]),
-                                    child: const Text(
-                                      '删除',
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.white),
-                                    ),
-                                  ))
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )))
-        ],
-      );
+      return AnimatedConfirmDialog(id: item);
     });
     Overlay.of(context).insert(overlayEntry!);
   }

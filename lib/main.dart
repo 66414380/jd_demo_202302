@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jd_demo_202302/accountv2.dart';
 import 'package:jd_demo_202302/cart.dart';
 import 'package:jd_demo_202302/login.dart';
 import 'package:jd_demo_202302/me.dart';
@@ -52,7 +53,37 @@ GoRouter router() {
                     )
                   ],
                 ),
-              )),
+              ),
+          routes: [
+            GoRoute(
+              name: 'accountV2',
+              path: 'accountV2',
+              // builder: (context, state) => const AccountV2(),
+              pageBuilder: (context, state) => CustomTransitionPage(
+                key: state.pageKey,
+                child: const AccountV2(),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) => Stack(
+                  children: <Widget>[
+                    SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.0, 0.0),
+                        end: const Offset(-0.1, 0.0),
+                      ).animate(animation),
+                      child: const Login(),
+                    ),
+                    SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(1.0, 0.0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ]),
 
       // GoRoute(
       //   path: '/catalog',

@@ -20,13 +20,16 @@ class Cart extends StatefulWidget {
   State<Cart> createState() => _CartState();
 }
 
-class _CartState extends State<Cart> {
+class _CartState extends State<Cart> with AutomaticKeepAliveClientMixin {
 
   late double allPrice = 0.00, opacity = .3;
   late int total = 0;
-
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var cart = context.watch<CartModel>();
 
     void setPrice() {

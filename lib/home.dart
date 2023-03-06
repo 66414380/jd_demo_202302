@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   late EasyRefreshController easyRefreshController;
   late PageController pageController;
   final List<List<Map<String, dynamic>>> cateList = [
@@ -80,7 +80,11 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     List<int> list = List.filled(listIndex, 1);
     return Scaffold(
         appBar: CustomAppBar(
@@ -157,7 +161,8 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        body: EasyRefresh(
+        // child作用域内，所有滚动组件会公用一个physics。如果有滚动嵌套，请使用EasyRefresh.builder或用ScrollConfiguration设置作用域 (解决与PageView，页面切换时报错)
+        body: EasyRefresh.builder(
           footer: CustomRefreshFooter(
               iconTheme: const IconThemeData(color: Colors.red),
               processingText: ''),
@@ -174,247 +179,261 @@ class _HomeState extends State<Home> {
                 ? IndicatorResult.noMore
                 : IndicatorResult.success);
           },
-          child: ListView(
-            children: [
-              Stack(
-                children: [
-                  ClipPath(
-                      clipper: BottomWaveClipper(),
-                      child: Container(
-                        height: 101,
-                        decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [Color(0xffc82519), Color(0xfff1503b)],
-                                stops: [0.4, 1],
-                                begin: FractionalOffset(0.5, 0),
-                                // Alignment.topCenter
-                                end: Alignment(
-                                    0, 1) // FractionalOffset(0.5, 1.0)
-                                )),
-                      )),
-                  const CustomBanner(height: 140)
-                ],
-              ),
-              Stack(
-                alignment: Alignment.bottomCenter,
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                      height: 162,
-                      width: double.infinity,
-                      constraints: const BoxConstraints(maxHeight: 162),
-                      child: PageView(
-                        controller: pageController,
-                        onPageChanged: (int i) {
-                          setState(() {
-                            cateId = i;
-                          });
-                        },
-                        children: [
-                          getCateList(0),
-                          getCateList(1),
-                        ],
-                      )),
-                  Utils.buildIndicator(imgs: cateList, i: cateId, bottom: 0),
-                ],
-              ),
-              // 京东秒杀
-              Container(
-                margin: const EdgeInsets.all(10),
-                height: 130,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                          color: Color(0xfff2f2f2),
-                          offset: Offset(1, 1),
-                          blurRadius: 1)
-                    ]),
-                child: Column(
+          childBuilder: (BuildContext context, ScrollPhysics physics) {
+            return ListView(
+              physics: physics,
+              children: [
+                Stack(
+                  children: [
+                    ClipPath(
+                        clipper: BottomWaveClipper(),
+                        child: Container(
+                          height: 101,
+                          decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                Color(0xffc82519),
+                                Color(0xfff1503b)
+                              ],
+                                  stops: [
+                                0.4,
+                                1
+                              ],
+                                  begin: FractionalOffset(0.5, 0),
+                                  // Alignment.topCenter
+                                  end: Alignment(
+                                      0, 1) // FractionalOffset(0.5, 1.0)
+                                  )),
+                        )),
+                    const CustomBanner(height: 140)
+                  ],
+                ),
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  clipBehavior: Clip.none,
                   children: [
                     Container(
-                      height: 34,
-                      decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              alignment: Alignment.centerLeft,
-                              fit: BoxFit.contain,
-                              image: AssetImage('images/home/dot.png'))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                margin:
-                                    const EdgeInsets.only(left: 10, right: 5),
-                                child: const Text(
-                                  '秒杀',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color.fromRGBO(51, 51, 51, 1)),
+                        height: 162,
+                        width: double.infinity,
+                        constraints: const BoxConstraints(maxHeight: 162),
+                        child: PageView(
+                          controller: pageController,
+                          onPageChanged: (int i) {
+                            setState(() {
+                              cateId = i;
+                            });
+                          },
+                          children: [
+                            getCateList(0),
+                            getCateList(1),
+                          ],
+                        )),
+                    Utils.buildIndicator(imgs: cateList, i: cateId, bottom: 0),
+                  ],
+                ),
+                // 京东秒杀
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  height: 130,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color(0xfff2f2f2),
+                            offset: Offset(1, 1),
+                            blurRadius: 1)
+                      ]),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 34,
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                alignment: Alignment.centerLeft,
+                                fit: BoxFit.contain,
+                                image: AssetImage('images/home/dot.png'))),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.only(left: 10, right: 5),
+                                  child: const Text(
+                                    '秒杀',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color.fromRGBO(51, 51, 51, 1)),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(left: 5),
-                                child: const Text(
-                                  '14',
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      color: Color.fromRGBO(255, 39, 39, 1)),
+                                Container(
+                                  margin: const EdgeInsets.only(left: 5),
+                                  child: const Text(
+                                    '14',
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: Color.fromRGBO(255, 39, 39, 1)),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                  margin: const EdgeInsets.only(right: 5),
-                                  padding: const EdgeInsets.only(right: 5),
-                                  child: Image.asset(
-                                    'images/home/seckill-time.png',
-                                    width: 20.5,
-                                    height: 17.5,
-                                  )),
-                              showClock('00'),
-                              Container(
-                                width: 6,
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  ':',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xfffa2c19),
-                                      fontWeight: FontWeight.w700),
+                                Container(
+                                    margin: const EdgeInsets.only(right: 5),
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: Image.asset(
+                                      'images/home/seckill-time.png',
+                                      width: 20.5,
+                                      height: 17.5,
+                                    )),
+                                showClock('00'),
+                                Container(
+                                  width: 6,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    ':',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xfffa2c19),
+                                        fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                              ),
-                              showClock('00'),
-                              Container(
-                                width: 6,
-                                alignment: Alignment.center,
-                                child: const Text(
-                                  ':',
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xfffa2c19),
-                                      fontWeight: FontWeight.w700),
+                                showClock('00'),
+                                Container(
+                                  width: 6,
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    ':',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xfffa2c19),
+                                        fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                              ),
-                              showClock('00'),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Text('爆款轮番秒',
-                                  style: TextStyle(
-                                      fontSize: 12, color: Color(0xfff23030))),
-                              SizedBox(
-                                  width: 22,
-                                  child: Image.asset(
-                                    'images/home/arrow_rt.png',
-                                    width: 11,
-                                    height: 11,
-                                  ))
-                            ],
-                          )
-                        ],
+                                showClock('00'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('爆款轮番秒',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xfff23030))),
+                                SizedBox(
+                                    width: 22,
+                                    child: Image.asset(
+                                      'images/home/arrow_rt.png',
+                                      width: 11,
+                                      height: 11,
+                                    ))
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          for (var item in msData)
-                            SizedBox(
-                                width: 57,
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            for (var item in msData)
+                              SizedBox(
+                                  width: 57,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        margin:
+                                            const EdgeInsets.only(bottom: 8),
+                                        child: Image.asset(
+                                          item['img'],
+                                          width: 55.16,
+                                          height: 55.16,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            '¥',
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(0xfff2270c)),
+                                          ),
+                                          Text(
+                                            item['price'],
+                                            style: const TextStyle(
+                                                fontSize: 13,
+                                                color: Color(0xfff2270c)),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
+                            Container(
+                                width: 20,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 11),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                color: const Color(0xfff5f5f5),
                                 child: Column(
                                   children: [
                                     Container(
-                                      margin: const EdgeInsets.only(bottom: 8),
-                                      child: Image.asset(
-                                        item['img'],
-                                        width: 55.16,
-                                        height: 55.16,
-                                        fit: BoxFit.contain,
+                                      width: 12,
+                                      height: 12,
+                                      decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(12)),
+                                          color: Color(0xffC51C2A)),
+                                      child: const Icon(
+                                        Icons.arrow_back_outlined,
+                                        color: Colors.white,
+                                        size: 11,
                                       ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          '¥',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Color(0xfff2270c)),
-                                        ),
-                                        Text(
-                                          item['price'],
-                                          style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xfff2270c)),
-                                        ),
-                                      ],
+                                    const Text(
+                                      '查看全部',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xff666666)),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ],
                                 )),
-                          Container(
-                              width: 20,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 11),
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              color: const Color(0xfff5f5f5),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12)),
-                                        color: Color(0xffC51C2A)),
-                                    child: const Icon(
-                                      Icons.arrow_back_outlined,
-                                      color: Colors.white,
-                                      size: 11,
-                                    ),
-                                  ),
-                                  const Text(
-                                    '查看全部',
-                                    style: TextStyle(
-                                        fontSize: 12, color: Color(0xff666666)),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              )),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-
-              // 列表
-              Container(
-                  padding: const EdgeInsets.all(5),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [for (var item in list) const GoodsItem()],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            for (var item in list)
-                              const GoodsItem(
-                                height: 350,
-                              )
                           ],
                         ),
                       )
                     ],
-                  ))
-            ],
-          ),
+                  ),
+                ),
+                // 列表
+                Container(
+                    padding: const EdgeInsets.all(5),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              for (var item in list) const GoodsItem()
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              for (var item in list)
+                                const GoodsItem(
+                                  height: 350,
+                                )
+                            ],
+                          ),
+                        )
+                      ],
+                    ))
+              ],
+            );
+          },
         ));
   }
 

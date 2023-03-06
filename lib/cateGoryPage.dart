@@ -44,7 +44,7 @@ function pj1715(result){channel && channel.postMessage(JSON.stringify(result));}
 </html>
 ''';
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMixin {
   late List<Map<String, dynamic>> listJson = [];
   late List<Category> listClass = [];
   late List<Level1words> level1wordsList = [];
@@ -81,7 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
     scrollLeftController.dispose();
     scrollRightController.dispose();
   }
-
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
   Widget gridWidget(List<Level2words> list) {
     return GridView.builder(
         shrinkWrap: true,
@@ -141,6 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(

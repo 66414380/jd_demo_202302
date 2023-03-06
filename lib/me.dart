@@ -3,6 +3,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jd_demo_202302/accountv2.dart';
 import 'package:jd_demo_202302/components/customAppBar.dart';
 import 'package:jd_demo_202302/components/customDivide.dart';
 import 'package:jd_demo_202302/components/customPageRoute.dart';
@@ -20,7 +21,7 @@ class Me extends StatefulWidget {
   State<Me> createState() => _MeState();
 }
 
-class _MeState extends State<Me> {
+class _MeState extends State<Me> with AutomaticKeepAliveClientMixin {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   late String loginName = '';
 
@@ -33,9 +34,12 @@ class _MeState extends State<Me> {
       });
     });
   }
-
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     Widget noLogin = Container(
       margin: const EdgeInsets.only(left: 4),
       child: GestureDetector(
@@ -155,15 +159,13 @@ class _MeState extends State<Me> {
                   ],
                 ),
                 GestureDetector(
-                    onTap: () {
-                      _prefs.then((value){
-                        value.remove('token');
+                    onTap: () async {
+                      final res = await Navigator.of(context).push(EnterExitRoute(exitPage: widget, enterPage: const AccountV2()));
+                      if(res != null) {
                         setState(() {
                           loginName = '';
-                          context.read<BottomBarList>().setNoLoginBottomBarList();
                         });
-                      });
-                    },
+                      }},
                     child: Image.asset(
                       'images/me/account-icon.png',
                       width: 20,
