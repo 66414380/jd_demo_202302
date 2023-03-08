@@ -7,6 +7,7 @@ ListView.builder 嵌套 GridView.builder
  */
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'model//category.dart';
 
@@ -96,6 +97,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
           return GestureDetector(
               onTap: () {
                 print(list[i].url);
+                context.pushNamed('productsList');
               },
               child: Column(
                 children: [

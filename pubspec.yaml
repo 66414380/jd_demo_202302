@@ -75,6 +75,7 @@ flutter:
     - images/banner3/
     - images/me/
     - images/login/
+    - images/productsList/
     - images/categorydef.png
     - images/bar_menu.png
     - images/type_index.png
