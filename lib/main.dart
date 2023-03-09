@@ -40,7 +40,7 @@ customTransitionPage({state, originPage, toPage}) {
 GoRouter router() {
   return GoRouter(
     // /cateGoryPage/productsList
-    initialLocation: '/cateGoryPage/productsList',
+    initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (context, state) => const App(), routes: [
         GoRoute(

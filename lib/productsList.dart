@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/components/confirmDialog.dart';
 import 'package:jd_demo_202302/components/customAppBar.dart';
 import 'package:jd_demo_202302/components/headerNav.dart';
+import 'package:jd_demo_202302/components/productItem.dart';
 
 class ProductsList extends StatefulWidget {
   const ProductsList({Key? key}) : super(key: key);
@@ -13,7 +14,9 @@ class ProductsList extends StatefulWidget {
 
 class _ProductsListState extends State<ProductsList> {
   GlobalKey globalKey1 = GlobalKey();
-  final LayerLink layerLink1 = LayerLink();
+  final LayerLink layerLink1 = LayerLink(), layerLink2 = LayerLink();
+  // 用late会报316行 _overlayEntry?.remove();_overlayEntry未初始化，所以这里可以用static修释，或者不加static，都会有一个null默认值
+  OverlayEntry? _overlayEntry;
   late double top0H = 0;
   late int quarterTurns0 = 0, quarterTurns1 = 0;
   late int selectedId = 0;
@@ -25,13 +28,46 @@ class _ProductsListState extends State<ProductsList> {
     {'id': 4, 'name': '促销', 'selected': false},
   ];
   List<Map<String, dynamic>> list2 = [
-    {'id': 0, 'name': '京东物流', 'image': ''},
-    {'id': 1, 'name': '新品', 'image': ''},
-    {'id': 2, 'name': '品牌', 'image': 'images/productsList/icon_tri_1.png'},
-    {'id': 3, 'name': '运行内存', 'image': 'images/productsList/icon_tri_1.png'},
-    {'id': 4, 'name': '机身内存', 'image': 'images/productsList/icon_tri_1.png'},
-    {'id': 5, 'name': '屏幕尺寸', 'image': 'images/productsList/icon_tri_1.png'},
+    {'id': 0, 'name': '京东物流', 'image': '', 'layerLink': LayerLink()},
+    {'id': 1, 'name': '新品', 'image': '', 'layerLink': LayerLink()},
+    {
+      'id': 2,
+      'name': '品牌',
+      'image': 'images/productsList/icon_tri_1.png',
+      'layerLink': LayerLink()
+    },
+    {
+      'id': 3,
+      'name': '运行内存',
+      'image': 'images/productsList/icon_tri_1.png',
+      'layerLink': LayerLink()
+    },
+    {
+      'id': 4,
+      'name': '机身内存',
+      'image': 'images/productsList/icon_tri_1.png',
+      'layerLink': LayerLink()
+    },
+    {
+      'id': 5,
+      'name': '屏幕尺寸',
+      'image': 'images/productsList/icon_tri_1.png',
+      'layerLink': LayerLink()
+    },
+    {
+      'id': 6,
+      'name': 'CPU型号',
+      'image': 'images/productsList/icon_tri_1.png',
+      'layerLink': LayerLink()
+    },
+    {
+      'id': 7,
+      'name': '电池容量',
+      'image': 'images/productsList/icon_tri_1.png',
+      'layerLink': LayerLink()
+    },
   ];
+  late int selectedId2 = -1;
 
   @override
   void initState() {
@@ -258,47 +294,224 @@ class _ProductsListState extends State<ProductsList> {
                   ),
                 ),
               ),
-              Container(
-                height: 50,
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for (var i = 0; i < list2.length; i++)
-                        GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              width: 80,
-                              height: 30,
-                              margin: EdgeInsets.only(
-                                  right: i != list2.length - 1 ? 6 : 0),
-                              decoration:
-                                  const BoxDecoration(color: Color(0xfff2f2f7)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    list2[i]['name'],
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Color(0xff666666)),
-                                  ),
-                                  list2[i]['image'] != ''
-                                      ? Container(
-                                          margin:
-                                              const EdgeInsets.only(left: 4),
-                                          child: Image.asset(list2[i]['image'],
-                                              width: 8, height: 5))
-                                      : Container()
-                                ],
-                              ),
-                            ))
-                    ],
+              CompositedTransformTarget(
+                link: layerLink2,
+                child: Container(
+                  height: 50,
+                  padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+                  alignment: Alignment.topCenter,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < list2.length; i++)
+                          GestureDetector(
+                              onTap: () {
+                                if (list2[i]['image'] == '') return;
+                                if (selectedId2 == list2[i]['id']) {
+                                  selectedId2 = -1;
+                                } else {
+                                  selectedId2 = list2[i]['id'];
+                                  ConfirmDialog.close();
+                                  _overlayEntry?.remove();
+                                  _overlayEntry = null;
+                                }
+                                if (ConfirmDialog.overlayEntry == null) {
+                                  ConfirmDialog.showProductPop(
+                                      context,
+                                      UnconstrainedBox(
+                                          child: CompositedTransformFollower(
+                                              link: layerLink2,
+                                              offset: const Offset(0, 50),
+                                              child: Stack(
+                                                children: [
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width,
+                                                    height: MediaQuery.of(context).size.height,
+                                                      color: const Color.fromRGBO(0, 0, 0, .3),
+                                                    ),
+                                                  Material(
+                                                      child: Container(
+                                                        width: MediaQuery.of(context)
+                                                            .size
+                                                            .width,
+                                                        constraints:
+                                                        const BoxConstraints(
+                                                            maxHeight: 300),
+                                                        decoration: const BoxDecoration(
+                                                            color: Colors.white,
+                                                            border: Border(
+                                                                top: BorderSide(
+                                                                    width: 1,
+                                                                    color: Color(
+                                                                        0xffe5e5e5)))),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            Expanded(child: Text(list2[i]['name'],
+                                                            )),
+
+                                                            // Text(list2[i]['name']),
+                                                            Container(
+                                                              height: 45,
+                                                              decoration: const BoxDecoration(
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                        color: Color(0xfff1f1f1),
+                                                                        offset: Offset(0, -1),
+                                                                        blurRadius: 3)
+                                                                  ]),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                      child: Material(
+                                                                          child: GestureDetector(
+                                                                              onTap: () {
+                                                                                // for (var element in widget.list) {
+                                                                                //   element['selected'] = false;
+                                                                                // }
+                                                                                setState(() {
+
+                                                                                });
+                                                                              },
+                                                                              child: Container(
+                                                                                  height: double.infinity,
+                                                                                  alignment: Alignment.center,
+                                                                                  color: Colors.white,
+                                                                                  child: const Text(
+                                                                                    '重置',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 16,
+                                                                                        color: Color(0xffe4393c)),
+                                                                                  ))))),
+                                                                  Expanded(
+                                                                      child: Material(
+                                                                          child: GestureDetector(
+                                                                              onTap: () {
+                                                                                selectedId2 = -1;
+                                                                                ConfirmDialog.close();
+                                                                                _overlayEntry?.remove();
+                                                                                _overlayEntry = null;
+                                                                                setState(() {});
+                                                                              },
+                                                                              child: Container(
+                                                                                  alignment: Alignment.center,
+                                                                                  color: const Color(0xffe4393c),
+                                                                                  child: const Text(
+                                                                                    '确认',
+                                                                                    style: TextStyle(
+                                                                                        fontSize: 16,
+                                                                                        color: Colors.white),
+                                                                                  ))))),
+                                                                ],
+                                                              ),
+                                                            )
+
+                                                          ],
+                                                        ),
+                                                      ))
+                                                ],
+                                              )
+
+
+
+                                          )));
+                                } else {
+                                  ConfirmDialog.close();
+                                }
+                                if (_overlayEntry == null) {
+                                  _overlayEntry =
+                                      OverlayEntry(builder: (context) {
+                                    return UnconstrainedBox(
+                                        child: CompositedTransformFollower(
+                                            link: list2[i]['layerLink'],
+                                            offset: const Offset(1, 39),
+                                            child: Container(
+                                              width: 78,
+                                              height: 3,
+                                              color: Colors.white,
+                                            )));
+                                  });
+                                  Overlay.of(context).insert(_overlayEntry!);
+                                } else {
+                                  _overlayEntry?.remove();
+                                  _overlayEntry = null;
+                                }
+
+                                setState(() {});
+                              },
+                              child: CompositedTransformTarget(
+                                  link: list2[i]['layerLink'],
+                                  child: Container(
+                                      width: 80,
+                                      height: selectedId2 == list2[i]['id']
+                                          ? 41
+                                          : 30,
+                                      margin: EdgeInsets.only(
+                                          right: i != list2.length - 1 ? 6 : 0),
+                                      decoration: BoxDecoration(
+                                          color: selectedId2 == list2[i]['id']
+                                              ? Colors.white
+                                              : const Color(0xfff2f2f7),
+                                          border: Border.all(
+                                              width: 1,
+                                              color:
+                                                  selectedId2 == list2[i]['id']
+                                                      ? const Color(0xffe5e5e5)
+                                                      : Colors.transparent)),
+                                      child: Stack(
+                                        alignment: Alignment.topCenter,
+                                        children: [
+                                          Positioned(
+                                            top: 5,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  list2[i]['name'],
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Color(0xff666666)),
+                                                ),
+                                                list2[i]['image'] != ''
+                                                    ? Container(
+                                                        margin: const EdgeInsets
+                                                            .only(left: 4),
+                                                        child: RotatedBox(
+                                                            quarterTurns:
+                                                                selectedId2 ==
+                                                                        list2[i]
+                                                                            [
+                                                                            'id']
+                                                                    ? 90
+                                                                    : 0,
+                                                            child: Image.asset(
+                                                                list2[i]
+                                                                    ['image'],
+                                                                width: 8,
+                                                                height: 5)))
+                                                    : Container()
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ))))
+                      ],
+                    ),
                   ),
                 ),
               )
             ],
           )),
+
+      body: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (BuildContext context, int index) {
+        return const ProductItem();
+      }),
       endDrawer: Drawer(
           width: 319,
           // backgroundColor: Colors.amber,
@@ -373,6 +586,9 @@ class _ProductsListState extends State<ProductsList> {
       quarterTurns1 = 0;
       ConfirmDialog.close();
     }
+    selectedId2 = -1;
+    _overlayEntry?.remove();
+    _overlayEntry = null;
     setState(() {});
   }
 }
