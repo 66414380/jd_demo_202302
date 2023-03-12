@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/components/confirmDialog.dart';
+import 'package:jd_demo_202302/components/countryPicker.dart';
 import 'package:jd_demo_202302/components/customAppBar.dart';
+import 'package:jd_demo_202302/components/customPageRoute.dart';
 import 'package:jd_demo_202302/model/bottomBarListModel.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +25,7 @@ class _LoginState extends State<Login> {
   late bool isChecked = false;
   late bool checkSubmit = false;
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late String country = '86';
   @override
   void initState() {
     super.initState();
@@ -113,14 +117,28 @@ class _LoginState extends State<Login> {
                                           width: 1, color: Color(0xffefefef)))),
                               child: Row(
                                 children: [
-                                  const Text(
-                                    '+86',
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                  const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 20,
-                                  ),
+                                  GestureDetector(onTap: () async {
+                                    final res = await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const CountryPicker())); // iso页面跳转
+                                    // final res = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CountryPicker())); // android页面跳转
+                                    // final res = await Navigator.of(context).push(EnterExitRoute(exitPage: widget, enterPage: const CountryPicker())); // 自定义左右 原页面数据显示有问题
+
+                                    // final res = await Navigator.of(context).push(SlideRoute(page: const CountryPicker()));// 自定义左右
+                                    if(res != null) {
+                                      setState(() {
+                                        country = res;
+                                      });
+                                    }
+                                  },child: Row(children: [
+                                    Text(
+                                      '+$country',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                    const Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 20,
+                                    ),
+                                  ],),),
+
                                   Expanded(
                                       child: TextFormField(
                                     controller: phoneController,

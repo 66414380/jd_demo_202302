@@ -33,7 +33,7 @@ class EnterExitRoute extends PageRouteBuilder {
                   begin: const Offset(1.0, 0.0),
                   end: Offset.zero,
                 ).animate(animation),
-                child: enterPage,
+                child: child,
               )
             ],
           ),
@@ -105,7 +105,7 @@ class SlideRoute extends PageRouteBuilder {
           ) =>
               SlideTransition(
             position: Tween<Offset>(
-              begin: const Offset(-1, 0), //-1左向右，1右向左
+              begin: const Offset(1, 0), //-1左向右，1右向左
               end: Offset.zero,
             ).animate(animation),
             child: child,

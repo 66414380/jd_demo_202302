@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/accountv2.dart';
 import 'package:jd_demo_202302/cart.dart';
+import 'package:jd_demo_202302/components/countryPicker.dart';
 import 'package:jd_demo_202302/login.dart';
 import 'package:jd_demo_202302/me.dart';
 import 'package:jd_demo_202302/model/bottomBarListModel.dart';
@@ -78,18 +79,16 @@ GoRouter router() {
                     state: state,
                     originPage: const Login(),
                     toPage: const AccountV2())),
+            GoRoute(
+                name: 'countryPicker',
+                path: 'countryPicker',
+                // builder: (context, state) => const CountryPicker(),
+                pageBuilder: (context, state) => customTransitionPage(
+                    state: state,
+                    originPage: const Login(),
+                    toPage: const CountryPicker())),
           ]),
 
-      // GoRoute(
-      //   path: '/catalog',
-      //   builder: (context, state) => const MyCatalog(),
-      //   routes: [
-      //     GoRoute(
-      //       path: 'cart',
-      //       builder: (context, state) => const MyCart(),
-      //     ),
-      //   ],
-      // ),
     ],
   );
 }
