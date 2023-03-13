@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'cateGoryPage.dart';
 import 'app.dart';
 
-customTransitionPage({state, originPage, toPage}) {
+customTwoTransitionPage({state, originPage, toPage}) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: toPage,
@@ -37,10 +37,25 @@ customTransitionPage({state, originPage, toPage}) {
     ),
   );
 }
+customOneTransitionPage({state, page}) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0), //-1左向右，1右向左
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        ),
+  );
+}
+
 
 GoRouter router() {
   return GoRouter(
-    // /cateGoryPage/productsList
+    //
     initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (context, state) => const App(), routes: [
@@ -51,11 +66,13 @@ GoRouter router() {
             routes: [
               GoRoute(
                   name: 'productsList',
-                  path: 'productsList',
-                  pageBuilder: (context, state) => customTransitionPage(
-                      state: state,
-                      originPage: const CateGoryPage(),
-                      toPage: const ProductsList())),
+                  path: 'productsList/:id', // params的参数需要传参, 而且:id要必写
+                  pageBuilder: (context, state) {
+                    String? id = state.params['id']; //只能是String
+                    String? keyword = state.queryParams['keyword']; //只能是String
+                    Map? obj = state.extra as Map?;
+                    return customOneTransitionPage(state: state,page: ProductsList( id: id, obj: obj, keyword: keyword,));
+                  }),
             ]),
         GoRoute(
             name: 'cart',
@@ -68,25 +85,23 @@ GoRouter router() {
           name: 'login',
           path: '/login',
           // builder: (context, state) => const Login(),
-          pageBuilder: (context, state) => customTransitionPage(
-              state: state, originPage: const Me(), toPage: const Login()),
+          pageBuilder: (context, state) => customOneTransitionPage(
+              state: state, page: const Login()),
           routes: [
             GoRoute(
                 name: 'accountV2',
                 path: 'accountV2',
                 // builder: (context, state) => const AccountV2(),
-                pageBuilder: (context, state) => customTransitionPage(
+                pageBuilder: (context, state) => customOneTransitionPage(
                     state: state,
-                    originPage: const Login(),
-                    toPage: const AccountV2())),
+                    page: const AccountV2())),
             GoRoute(
                 name: 'countryPicker',
                 path: 'countryPicker',
                 // builder: (context, state) => const CountryPicker(),
-                pageBuilder: (context, state) => customTransitionPage(
+                pageBuilder: (context, state) => customOneTransitionPage(
                     state: state,
-                    originPage: const Login(),
-                    toPage: const CountryPicker())),
+                    page: const CountryPicker())),
           ]),
 
     ],

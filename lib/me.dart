@@ -1,6 +1,7 @@
 /**
  * 使用 Container > Stack > Positioned > Image.asset 实现 background-position 效果
  */
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/accountv2.dart';
@@ -45,7 +46,7 @@ class _MeState extends State<Me> with AutomaticKeepAliveClientMixin {
       child: GestureDetector(
         onTap: () async {
           // context.pushNamed('login');
-          final res = await Navigator.of(context).push(EnterExitRoute(exitPage: widget, enterPage: const Login()));
+          final res = await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const Login()));
           if(res != null) {
             setState(() {
               loginName = res;

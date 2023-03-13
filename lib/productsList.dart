@@ -6,8 +6,10 @@ import 'package:jd_demo_202302/components/headerNav.dart';
 import 'package:jd_demo_202302/components/productItem.dart';
 
 class ProductsList extends StatefulWidget {
-  const ProductsList({Key? key}) : super(key: key);
-
+  const ProductsList({Key? key, this.id, this.keyword, this.obj}) : super(key: key);
+  final String? id;
+  final String? keyword;
+  final Map? obj;
   @override
   State<ProductsList> createState() => _ProductsListState();
 }
@@ -75,6 +77,20 @@ class _ProductsListState extends State<ProductsList> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       top0H = globalKey1.currentContext?.size?.height ?? 0;
     });
+
+    print('传参---------${widget.id}---${widget.keyword}++++${widget.obj?['key']}');
+
+  }
+  clear() {
+    ConfirmDialog.close();
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    clear();
   }
 
   @override
@@ -93,6 +109,7 @@ class _ProductsListState extends State<ProductsList> {
                         width: 40,
                         child: GestureDetector(
                           onTap: () {
+                            clear();
                             context.pop();
                           },
                           child: const Icon(
@@ -313,9 +330,7 @@ class _ProductsListState extends State<ProductsList> {
                                   selectedId2 = -1;
                                 } else {
                                   selectedId2 = list2[i]['id'];
-                                  ConfirmDialog.close();
-                                  _overlayEntry?.remove();
-                                  _overlayEntry = null;
+                                  clear();
                                 }
                                 if (ConfirmDialog.overlayEntry == null) {
                                   ConfirmDialog.showProductPop(
@@ -391,9 +406,7 @@ class _ProductsListState extends State<ProductsList> {
                                                                           child: GestureDetector(
                                                                               onTap: () {
                                                                                 selectedId2 = -1;
-                                                                                ConfirmDialog.close();
-                                                                                _overlayEntry?.remove();
-                                                                                _overlayEntry = null;
+                                                                                clear();
                                                                                 setState(() {});
                                                                               },
                                                                               child: Container(

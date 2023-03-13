@@ -14,7 +14,7 @@ class _AnimatedConfirmDialogState extends State<AnimatedConfirmDialog> {
   @override
   void initState() {
     super.initState();
-    // 需要排除等OverlayEntry渲染
+    // 需要排队等OverlayEntry渲染
     Future.delayed(const Duration(microseconds: 0)).then((value) {
       setState(() {
         opacity = opacity == 1.0 ? 0.0 : 1.0;

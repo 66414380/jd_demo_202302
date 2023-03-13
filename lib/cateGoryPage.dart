@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
   late List<Level1words> level1wordsList = [];
   late WebViewController controller = WebViewController();
   late int selected = 0;
+  final GlobalKey key = GlobalKey();
   ScrollController scrollLeftController = ScrollController(),
       scrollRightController = ScrollController();
 
@@ -97,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
           return GestureDetector(
               onTap: () {
                 print(list[i].url);
-                context.pushNamed('productsList');
+                context.pushNamed('productsList', params: {'id': '123'},queryParams: {'keyword': '999'}, extra: {'key': {'xx': 111},'key2':'参数2'});
               },
               child: Column(
                 children: [
@@ -164,8 +165,15 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                               scrollLeftController.animateTo(i * 46,
                                   duration: const Duration(milliseconds: 200),
                                   curve: Curves.linear);
-                              level1wordsList = listClass[i].level1words;
-                              scrollRightController.jumpTo(0);
+                              // 不使用jumpTo，短列表页面切换成长列表页面时会出现不能到页顶的情况
+                              // scrollRightController.jumpTo(0);
+                              scrollRightController.animateTo(0,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.linear).whenComplete(() {
+                                setState(() {
+                                  level1wordsList = listClass[i].level1words;
+                                });
+                              });
                             });
                           },
                           child: Container(
@@ -191,6 +199,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
               ),
               Expanded(
                   child: Container(
+                    key: key,
                     height: double.infinity,
                     padding: const EdgeInsets.only(
                         top: 19, left: 7, right: 7, bottom: 0),
