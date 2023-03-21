@@ -161,7 +161,7 @@ class _MeState extends State<Me> with AutomaticKeepAliveClientMixin {
                 ),
                 GestureDetector(
                     onTap: () async {
-                      final res = await Navigator.of(context).push(EnterExitRoute(exitPage: widget, enterPage: const AccountV2()));
+                      final res = await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const AccountV2()));
                       if(res != null) {
                         setState(() {
                           loginName = '';

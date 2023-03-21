@@ -1,10 +1,13 @@
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jd_demo_202302/app.dart';
 import 'package:jd_demo_202302/components/customAppBar.dart';
 import 'package:jd_demo_202302/components/customBanner.dart';
 import 'package:jd_demo_202302/components/customRefreshFooter.dart';
 import 'package:jd_demo_202302/components/goodsItem.dart';
 import 'package:jd_demo_202302/components/utils.dart';
+import 'package:jd_demo_202302/login.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -95,7 +98,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               SizedBox(
                   width: 40,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      App.clickBottom(1);
+                    },
                     child: Image.asset(
                       'images/home/cate.png',
                       width: 20,
@@ -152,7 +157,14 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               SizedBox(
                   width: 40,
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      final res = await Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const Login()));
+                      if(res != null) {
+                        setState(() {
+                          print(res);
+                        });
+                      }
+                    },
                     child: const Text(
                       '登录',
                       style: TextStyle(fontSize: 14, color: Color(0xffffffff)),

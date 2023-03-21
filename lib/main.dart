@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jd_demo_202302/accountv2.dart';
 import 'package:jd_demo_202302/cart.dart';
@@ -11,7 +12,7 @@ import 'package:jd_demo_202302/productsList.dart';
 import 'package:provider/provider.dart';
 import 'cateGoryPage.dart';
 import 'app.dart';
-
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 customTwoTransitionPage({state, originPage, toPage}) {
   return CustomTransitionPage(
     key: state.pageKey,
@@ -126,6 +127,13 @@ class MyApp extends StatelessWidget {
               create: (BuildContext context) => BottomBarList()),
         ],
         child: MaterialApp.router(
+          builder: (BuildContext context, Widget? child) {
+            return MaterialApp(
+              navigatorKey: navigatorKey, // 使用fToast需要设置navigatorKey FToastBuilder()
+              builder: FToastBuilder(),
+              home: child,
+            );
+          },
           title: 'Jd Demo',
           theme: ThemeData(
             primarySwatch: Colors.blue,
